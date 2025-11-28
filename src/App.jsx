@@ -170,7 +170,7 @@ export default function NavigationMenu() {
                 )}
 
                 {/* Menu Items */}
-                <div className="flex-1 overflow-hidden relative">
+ <div className="flex-1 min-h-0 overflow-hidden relative">
                   <AnimatePresence mode="wait" custom={direction}>
                     <motion.div
                       key={currentLevel}
