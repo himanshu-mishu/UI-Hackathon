@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { menuData } from './data';
 import { ChevronRight, ChevronLeft, Package } from 'lucide-react';
@@ -7,6 +7,29 @@ export default function NavigationMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const [history, setHistory] = useState(['main']);
   const [direction, setDirection] = useState(1);
+
+  // time state
+  const [currentTime, setCurrentTime] = useState(
+    new Date().toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    })
+  );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(
+        new Date().toLocaleTimeString([], {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+        })
+      );
+    }, 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const currentLevel = history[history.length - 1];
 
@@ -51,13 +74,15 @@ export default function NavigationMenu() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Phone-like background */}
-      <div className="min-h-screen w-full bg-linear-to-br from-gray-50 to-gray-100 relative">
+      <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 to-gray-100 relative">
         {/* Status Bar */}
         <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200">
           <div className="flex items-center justify-between px-6 h-14 text-sm font-medium text-gray-800">
-            <span className="text-base">9:41</span>
+            <span className="text-base tabular-nums">
+              {currentTime}
+            </span>
             <div className="flex items-center gap-2">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
@@ -116,7 +141,6 @@ export default function NavigationMenu() {
                 dragConstraints={{ top: 0, bottom: 0 }}
                 dragElastic={0.2}
                 onDragEnd={(_, info) => {
-                  // drag down to close
                   if (info.offset.y > 120 || info.velocity.y > 700) {
                     setIsOpen(false);
                     setHistory(['main']);
@@ -159,7 +183,7 @@ export default function NavigationMenu() {
                         x: { type: 'spring', stiffness: 300, damping: 30 },
                         opacity: { duration: 0.2 },
                       }}
-                      className="h-full overflow-y-auto px-4 pb-6 pt-2 space-y-3"
+                      className="flex-1 overflow-y-auto px-4 pb-6 pt-2 space-y-3"
                     >
                       {getCurrentMenu().map((item, index) => {
                         const Icon = item.icon || Package;
@@ -173,7 +197,7 @@ export default function NavigationMenu() {
                             className="w-full bg-white rounded-2xl p-5 shadow-sm hover:shadow-md active:scale-[0.98] transition-all text-left"
                           >
                             <div className="flex items-center gap-4">
-                              <div className="w-12 h-12 rounded-xl bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white shrink-0">
+                              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white shrink-0">
                                 <Icon size={22} />
                               </div>
                               <div className="flex-1 min-w-0">
